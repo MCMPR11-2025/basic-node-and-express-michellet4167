@@ -4,7 +4,22 @@ let app = express();
 
 console.log("Hello World");
 
-app.use("/public", express.static(__dirname + "/public"));
+app.use(function(req,res, next) {
+  var message = req.method + " " + req.path + " - " + req.ip;
+  console.log(message);
+  next();
+});
+
+const middleware = (req, res, next) => {
+  req.time = new Date().toString();
+  next();
+};
+
+app.get("/now", middleware, (req, res) => {
+  res.send({
+    time: req.time
+  });
+});
     //res.sendFile(__dirname + "/views/index.html");
     //res.json({
 app.get("/json", function(req,res) {
